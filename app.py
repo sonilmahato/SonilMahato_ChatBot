@@ -4,7 +4,7 @@ import re
 import os
 
 # === Load CSV ===
-df = pd.read_csv("university_data.csv")
+df = pd.read_csv("qa_dataset.csv")
 df['question'] = df['question'].astype(str).str.strip()
 df['answer'] = df['answer'].astype(str).str.strip()
 questions = df['question'].tolist()
