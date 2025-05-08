@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template_string, jsonify
 import pandas as pd
 import re
 import os
@@ -26,7 +26,7 @@ def is_exact_match(query):
     return False, None
 
 # === Related Questions (Substring Matching) ===
-def get_related_questions(query, limit=10):
+def get_related_questions(query, limit=3):
     keywords = normalize(query).split()
     related = []
     seen = set()
@@ -37,7 +37,7 @@ def get_related_questions(query, limit=10):
             seen.add(q)
     return related[:limit]
 
-# HTML frontend as a string
+# === HTML Frontend ===
 html_template = """
 <!DOCTYPE html>
 <html>
@@ -83,23 +83,28 @@ html_template = """
 </html>
 """
 
+# === Route for frontend ===
+@app.route("/")
+def index():
+    return render_template_string(html_template)
 
-# === Route ===
-@app.route("/", methods=["GET", "POST"])
-def home():
-    response = ""
-    suggestions = []
-    if request.method == "POST":
-        query = request.form["query"]
-        match, answer = is_exact_match(query)
-        if match:
-            response = answer + " Would you like to ask another question?"
+# === API route for chat ===
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json()
+    query = data.get("message", "")
+    match, answer = is_exact_match(query)
+    if match:
+        response = answer + " Would you like to ask another question?"
+    else:
+        related = get_related_questions(query)
+        if related:
+            response = "I couldn’t find an exact answer. Here are related questions you can try:\n" + "\n".join(f"- {q}" for q in related)
         else:
-            response = "I couldn’t find an exact answer."
-            suggestions = get_related_questions(query)
-    return render_template_string(HTML, response=response, suggestions=suggestions)
+            response = "I couldn’t find an exact answer or related questions."
+    return jsonify({"response": response})
 
-# === Run App on Render-Compatible Host/Port ===
+# === Run App on Render-Compatible Port ===
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=False, host="0.0.0.0", port=port)
