@@ -52,15 +52,15 @@ html_template = """
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      height: 200vh;
     }
     #chatbox {
       background: white;
       width: 90%;
-      max-width: 700px;
+      max-width: 800px;
       padding: 25px 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
     }
     h2 {
       text-align: center;
@@ -90,7 +90,7 @@ html_template = """
     #messages {
       display: flex;
       flex-direction: column;
-      min-height: 200px;
+      min-height: 300px;
     }
     input, button {
       font-size: 16px;
