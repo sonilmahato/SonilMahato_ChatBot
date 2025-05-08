@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: university-chatbot
+    env: python
+    buildCommand: ""
+    startCommand: python3 app.py
