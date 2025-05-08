@@ -43,22 +43,127 @@ html_template = """
 <html>
 <head>
   <title>University Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; margin: 30px; background: #f4f4f9; }
-    #chatbox { width: 100%; max-width: 700px; margin: auto; }
-    .bubble { padding: 10px 15px; margin: 10px; border-radius: 10px; }
-    .user { background-color: #d1e7dd; text-align: right; }
-    .bot { background-color: #f8d7da; text-align: left; }
-    input, button { padding: 10px; font-size: 16px; width: 80%; }
-    button { width: 15%; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #e0f7fa, #f4f4f9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #chatbox {
+      background: white;
+      width: 90%;
+      max-width: 700px;
+      padding: 25px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #004d99;
+      margin-bottom: 20px;
+    }
+    .bubble {
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-radius: 20px;
+      max-width: 80%;
+      line-height: 1.4;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .user {
+      background-color: #d1e7dd;
+      align-self: flex-end;
+      text-align: right;
+      margin-left: auto;
+    }
+    .bot {
+      background-color: #fce4ec;
+      align-self: flex-start;
+      text-align: left;
+      margin-right: auto;
+    }
+    #messages {
+      display: flex;
+      flex-direction: column;
+      min-height: 200px;
+    }
+    input, button {
+      font-size: 16px;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+    }
+    input {
+      width: 70%;
+      margin-right: 5%;
+    }
+    button {
+      width: 23%;
+      background-color: #004d99;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #003366;
+    }
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .contact-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .contact-btn:hover {
+      background-color: #5a6268;
+    }
+    .contact-box {
+      margin-top: 20px;
+      background-color: #f1f1f1;
+      padding: 15px;
+      border-radius: 10px;
+      display: none;
+      font-size: 14px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
   <div id="chatbox">
     <h2>🎓 University Enquiry Chatbot</h2>
     <div id="messages"></div>
-    <input type="text" id="user_input" placeholder="Ask a question..." />
-    <button onclick="sendMessage()">Send</button>
+    <div style="display: flex;">
+      <input type="text" id="user_input" placeholder="Ask a question..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <div class="button-row">
+      <button class="contact-btn" onclick="toggleContact()">📧 Contact Designer</button>
+    </div>
+
+    <div id="contact-info" class="contact-box">
+      <strong>Designer:</strong> Sonil Mahato<br>
+      <strong>Email:</strong> <a href="mailto:sonilmahato12@gmail.com">sonilmahato12@gmail.com</a><br>
+      <strong>University:</strong> University of East London<br>
+      <strong>Role:</strong> ML/AI Developer
+    </div>
   </div>
 
   <script>
@@ -78,10 +183,16 @@ html_template = """
       const data = await res.json();
       document.getElementById("messages").innerHTML += `<div class='bubble bot'><b>Bot:</b> ${data.response.replace(/\\n/g, "<br>")}</div>`;
     }
+
+    function toggleContact() {
+      const box = document.getElementById("contact-info");
+      box.style.display = box.style.display === "none" || box.style.display === "" ? "block" : "none";
+    }
   </script>
 </body>
 </html>
 """
+
 
 # === Route for frontend ===
 @app.route("/")
